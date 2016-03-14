@@ -149,9 +149,13 @@ class Mailchimp
             $options = $this->getOptions($method, $arguments);
             $response = $this->client->{$method}($this->endpoint . $resource, $options);
 
-            $collection = new Collection(
-                json_decode($response->getBody())
-            );
+            $body = json_decode($response->getBody(), true);
+
+            if (!$body) {
+                return $body;
+            }
+
+            $collection = new Collection($body);
 
             if ($collection->count() == 1) {
                 return $collection->collapse();
